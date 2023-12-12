@@ -1,0 +1,76 @@
+#include <iostream>
+void swap(int&x, int&y) {
+  int t = x;
+  x = y;
+  y = t;
+}
+
+void SiftUp(int arr[],int id) {
+  while (id > 0) {
+    int id_parent = (id - 1) / 2;
+    if (arr[id_parent] < arr[id]) {
+      swap(arr[id_parent],arr[id]);
+      id = id_parent;
+    }
+    break;
+  }
+}
+
+void SiftDown(int *arr, int N, int id) {
+  while (id < N) {
+    int id_ch1 = id * 2 + 1;
+    int id_ch2 = id * 2 + 2;
+    int id_max = id; //в нее положим максимум 3-х
+    if ((id_ch1 < N) && (arr[id_ch1] > arr[id_max])) {
+      id_max = id_ch1;
+    }
+    if ((id_ch2 < N && (arr[id_ch2] > arr[id_max]))) {
+      id_max = id_ch2;
+    }
+    if (id != id_max) {
+      swap(arr[id],arr[id_max]);
+      id = id_max;
+    } else {
+      break;
+    }
+  }
+}
+
+void extrack_maximum(int arr[], int N) {
+  swap(arr[0],arr[N-1]);
+  N--;
+  int maxima = arr[N-1];
+  SiftDown(arr,N,0);
+}
+
+void heapSort(int arr[], int size) {
+  for (int i = size / 2 - 1; i >= 0; --i){
+    SiftDown(arr, size, i);
+  }
+  for (int i = size - 1; i >= 0; --i) {
+    int tmp = arr[0];
+    arr[0] = arr[i];
+    arr[i] = tmp;
+    SiftDown(arr, i, 0);
+  }
+}
+
+void resize(int** arr, int N, int& capacity) {
+  int* new_arr = new int[2 * capacity];
+  for (int i = 0; i < N; ++i) {
+    new_arr[i] = (*arr)[i];
+  }
+  delete[] * arr;
+  *arr = new_arr;
+  capacity = 2 * capacity;
+}
+
+void Push(int arr[], int& N, int& capacity, int elem) {
+  if (N >= capacity - 1) {
+    resize(&arr, N, capacity);
+  }
+  arr[N] = elem;
+  N++;
+  SiftUp(arr, N);
+}
+//быстро построить кучу
