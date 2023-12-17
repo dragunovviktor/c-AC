@@ -116,6 +116,8 @@ int main() {
 
 //бинарный поиск
 
+#include <iostream>
+
 int main() {
 	int array_size, left = 0, right, middle, elem;
 	bool flag;
@@ -132,9 +134,9 @@ int main() {
 	while (left <= right - 1) {
 		middle = (left + right) / 2;
 		if (array[middle] > elem) {
-			right = array[middle];
+			right = middle - 1;
 		} else if (array[middle] < elem) {
-			left = array[middle];
+			left = middle + 1;
 		} else {
 			flag = true;
 			break;
