@@ -154,32 +154,35 @@ int main() {
 //Решето Эратосфена - найти все простые числа <= N
 //1 простое, 0 составное
 
+#include <iostream>
+
+void Estafo(int N) {
+    int* array = new int[N + 1];
+    for (int i = 0; i < N + 1; ++i) {
+        array[i] == 0;
+    }
+    int k;
+    for (int i = 2; i < N + 1; ++i) {
+        if (array[i] == 0) {
+            k = 2;
+            while (k * i <= (N + 1)) {
+                array[k*i] = 1;
+                k++;
+            }
+        }
+    }
+    for (int i = 0; i < N + 1; ++i) {
+        if (array[i] == 0) {
+            std::cout << i << ' ';
+        }
+    }
+    delete[] array;
+}
+
 int main() {
-	int array_size, N, k;
-	std::cin >> array_size;
-	int* arr = new int[array_size];
-
-	for (int i = 0; i < array_size; i++) {
-		std::cin >> arr[i];
-	}
-
-	for (int i = 2; i < array_size; i++) {
-		if (arr[i] == 0) {
-			k = 2;
-			while (k * i <= array_size) {
-				arr[k * i] = 1;
-				k++;
-			}
-		}
-	}
-
-	for (int i = 2; i < array_size; ++i) {
-		if (arr[i] == 0) {
-			std::cout << i;
-		}
-	}
-	delete[] arr;
-	return 0;
+    int N;
+    std::cin >> N;
+    Estafo(N);
 }
 
 
