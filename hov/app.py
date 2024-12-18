@@ -73,6 +73,20 @@ def index():
     betonomehalkers = Betonomehalka.query.order_by(Betonomehalka.name).all()
     return render_template('index.html', betonomehalkers=betonomehalkers)
 
+
+
+
+@app.route('/comment', methods=['POST'])
+def add_comment():
+    betonomehalka_id = request.form.get('betonomehalka_id')
+    text = request.form.get('text')
+    if betonomehalka_id and text:
+        comment = Comment(betonomehalka_id=betonomehalka_id, text=text)
+        db.session.add(comment)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Comment added!', 'text': comment.text})
+    return jsonify({'success': False, 'message': 'Invalid data'})
+
 @app.route('/sort')
 def sort_betonomehalkers():
     sort_by = request.args.get('sort_by', 'name')
@@ -92,21 +106,12 @@ def sort_betonomehalkers():
             'name': item.name,
             'specs': item.specs,
             'price': item.price,
+            'power': item.power,  # Add power to the returned data
             'comments': comments
         })
 
     return jsonify({'betonomehalkers': data})
 
-@app.route('/comment', methods=['POST'])
-def add_comment():
-    betonomehalka_id = request.form.get('betonomehalka_id')
-    text = request.form.get('text')
-    if betonomehalka_id and text:
-        comment = Comment(betonomehalka_id=betonomehalka_id, text=text)
-        db.session.add(comment)
-        db.session.commit()
-        return jsonify({'success': True, 'message': 'Comment added!', 'text': comment.text})
-    return jsonify({'success': False, 'message': 'Invalid data'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

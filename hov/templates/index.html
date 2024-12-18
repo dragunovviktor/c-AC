@@ -30,7 +30,9 @@
             <li class="product-card" id="betonomehalka-{{ item.id }}">
                 <h2 class="product-name">{{ item.name }}</h2>
                 <p class="product-specs">{{ item.specs }}</p>
-                <p class="product-price">Цена: <strong>{{ item.price }}</strong> руб</p>
+
+                <!-- Conditionally show the 'power' value based on sorting option -->
+                <p class="product-power" style="display: none;">Производительность: <strong>{{ item.power }}</strong> Вт</p>
 
                 <!-- Форма для добавления комментариев -->
                 <form class="comment-form" data-id="{{ item.id }}">
@@ -51,12 +53,45 @@
     <footer>
         <p>&copy; 2024 Бетоносмесители. Все права защищены.</p>
     </footer>
+
+    <script>
+        // JavaScript to show 'power' only when sorting by 'power'
+        document.getElementById('sort-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission to handle via AJAX
+
+            const sortBy = document.getElementById('sort_by').value;
+            fetch(`/sort?sort_by=${sortBy}`)
+                .then(response => response.json())
+                .then(data => {
+                    const productList = document.getElementById('betonomehalka-list');
+                    productList.innerHTML = '';
+
+                    data.betonomehalkers.forEach(item => {
+                        const productCard = document.createElement('li');
+                        productCard.classList.add('product-card');
+                        productCard.innerHTML = `
+                            <h2 class="product-name">${item.name}</h2>
+                            <p class="product-specs">${item.specs}</p>
+                            <p class="product-price">Цена: <strong>${item.price}</strong> руб</p>
+                            <p class="product-power" style="display: ${sortBy === 'power' ? 'block' : 'none'};">Производительность: <strong>${item.power}</strong> Вт</p>
+                            <form class="comment-form" data-id="${item.id}">
+                                <input type="text" name="text" placeholder="Оставьте комментарий" class="comment-input">
+                                <button type="submit" class="btn-submit">Отправить</button>
+                            </form>
+                            <ul class="comment-list" id="comments-${item.id}">
+                                ${item.comments.map(comment => `<li class="comment-item">${comment.text}</li>`).join('')}
+                            </ul>
+                        `;
+                        productList.appendChild(productCard);
+                    });
+                });
+        });
+    </script>
 </body>
-</html>
 
 <style>
 
-    /* Основные стили */
+        /* Основные стили */
 body {
     font-family: 'Roboto', sans-serif;
     line-height: 1.6;
@@ -215,6 +250,5 @@ footer {
     font-size: 0.9rem;
     color: #888;
 }
-
-
 </style>
+</html>
